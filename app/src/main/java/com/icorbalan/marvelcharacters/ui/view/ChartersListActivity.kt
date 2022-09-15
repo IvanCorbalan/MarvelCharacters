@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.icorbalan.marvelcharacters.databinding.ActivityMainBinding
 import com.icorbalan.marvelcharacters.ui.viewmodel.CharactersViewModel
 
 class ChartersListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val charactersAdapter = CharactersListAdapter()
 
     private val charactersViewModel: CharactersViewModel by viewModels()
 
@@ -19,18 +21,19 @@ class ChartersListActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        charactersViewModel.onCreate()
-
-        charactersViewModel.characterModel.observe(this, Observer { characterModel ->
-            binding.tvCharacterName.text = characterModel.name
-        })
-
         charactersViewModel.isLoading.observe(this, Observer {
             binding.progressBar.isVisible = it
         })
 
-        binding.viewContainer.setOnClickListener {
-            charactersViewModel.randomCharacter()
+        binding.characterList.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = charactersAdapter
         }
+
+        charactersViewModel.characterModel.observe(this, Observer { characterModel ->
+            charactersAdapter.submitList(characterModel)
+        })
+
+        charactersViewModel.onCreate()
     }
 }

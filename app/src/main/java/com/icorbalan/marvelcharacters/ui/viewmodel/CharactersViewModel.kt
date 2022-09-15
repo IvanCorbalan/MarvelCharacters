@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class CharactersViewModel : ViewModel() {
 
-    val characterModel = MutableLiveData<CharacterModel>()
+    val characterModel = MutableLiveData<List<CharacterModel>>()
     val isLoading = MutableLiveData<Boolean>()
 
     val getCharactersUseCase = GetCharactersUseCase()
@@ -27,8 +27,7 @@ class CharactersViewModel : ViewModel() {
     }
 
     fun randomCharacter() {
-        val character = CharactersProvider.characters[(CharactersProvider.characters.indices).random()]
-        characterModel.postValue(character)
+        characterModel.postValue(CharactersProvider.characters)
     }
 
 
