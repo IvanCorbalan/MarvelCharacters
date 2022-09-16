@@ -6,30 +6,27 @@ import androidx.lifecycle.viewModelScope
 import com.icorbalan.marvelcharacters.data.model.CharacterModel
 import com.icorbalan.marvelcharacters.data.model.CharactersProvider
 import com.icorbalan.marvelcharacters.domain.GetCharactersUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CharactersViewModel : ViewModel() {
+@HiltViewModel
+class CharactersViewModel @Inject constructor(
+    private val getCharactersUseCase: GetCharactersUseCase,
+    private val charactersProvider: CharactersProvider
+)  : ViewModel() {
 
     val characterModel = MutableLiveData<List<CharacterModel>>()
     val isLoading = MutableLiveData<Boolean>()
 
-    val getCharactersUseCase = GetCharactersUseCase()
-
     fun onCreate() {
         viewModelScope.launch {
             isLoading.postValue(true)
-            val result = getCharactersUseCase()
-            if (!result.isNullOrEmpty()) {
-                randomCharacter()
+            getCharactersUseCase()
+            if (!charactersProvider.characters.isNullOrEmpty()) {
+                characterModel.postValue(charactersProvider.characters)
                 isLoading.postValue(false)
             }
         }
     }
-
-    fun randomCharacter() {
-        characterModel.postValue(CharactersProvider.characters)
-    }
-
-
-
 }

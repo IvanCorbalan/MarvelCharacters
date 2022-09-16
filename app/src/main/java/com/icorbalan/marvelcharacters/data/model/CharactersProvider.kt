@@ -1,8 +1,9 @@
 package com.icorbalan.marvelcharacters.data.model
 
-class CharactersProvider {
+import javax.inject.Inject
+import javax.inject.Singleton
 
-    companion object {
-        var characters: List<CharacterModel> = emptyList()
-    }
+@Singleton
+class CharactersProvider @Inject constructor() {
+    var characters: List<CharacterModel> = emptyList()
 }

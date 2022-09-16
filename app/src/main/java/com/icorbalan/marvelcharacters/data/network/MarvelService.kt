@@ -7,15 +7,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.security.MessageDigest
+import javax.inject.Inject
 
-class MarvelService {
-
-    private val retrofit = RetrofitHelper.getRetrofit()
-
+class MarvelService @Inject constructor(
+    private val apiClient: MarvelApiClient
+) {
     suspend fun getCharacters(): CharactersResponse {
         val timestamp = System.currentTimeMillis()
         return withContext(Dispatchers.IO) {
-            val response =  retrofit.create(MarvelApiClient::class.java).getCharacters(
+            val response = apiClient.getCharacters(
                 generateMd5Hash(timestamp),
                 timestamp
             )

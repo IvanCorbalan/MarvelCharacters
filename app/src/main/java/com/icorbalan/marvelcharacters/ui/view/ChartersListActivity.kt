@@ -8,7 +8,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.icorbalan.marvelcharacters.databinding.ActivityMainBinding
 import com.icorbalan.marvelcharacters.ui.viewmodel.CharactersViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ChartersListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
