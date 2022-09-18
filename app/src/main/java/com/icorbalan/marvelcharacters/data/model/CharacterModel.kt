@@ -1,5 +1,10 @@
 package com.icorbalan.marvelcharacters.data.model
 
+data class ApiResponse(
+    val charactersResponse: CharactersResponse?,
+    val errorResponse: String?
+)
+
 data class CharactersResponse(
     val data: DataDto
 )
@@ -21,3 +26,4 @@ data class ImageDto(
 ) {
     fun imageUrl() = "${path}.${extension}"
 }
+

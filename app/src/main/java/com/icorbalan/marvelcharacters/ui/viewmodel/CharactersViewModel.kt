@@ -18,15 +18,18 @@ class CharactersViewModel @Inject constructor(
 
     val characterModel = MutableLiveData<List<CharacterModel>>()
     val isLoading = MutableLiveData<Boolean>()
+    val errorMessage = MutableLiveData<String>()
 
     fun onCreate() {
         viewModelScope.launch {
             isLoading.postValue(true)
             getCharactersUseCase()
-            if (!charactersProvider.characters.isNullOrEmpty()) {
+            if (charactersProvider.characters.isNotEmpty()) {
                 characterModel.postValue(charactersProvider.characters)
-                isLoading.postValue(false)
+            } else {
+                errorMessage.postValue(charactersProvider.errorMessage)
             }
+            isLoading.postValue(false)
         }
     }
 }

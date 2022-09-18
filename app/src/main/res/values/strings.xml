@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MarvelCharacters</string>
+    <string name="generic_error">Ups Algo Salio Mal</string>
+    <string name="snack_bar_retry">Reintentar</string>
 </resources>

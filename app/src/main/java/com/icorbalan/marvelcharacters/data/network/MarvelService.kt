@@ -1,8 +1,11 @@
 package com.icorbalan.marvelcharacters.data.network
 
+import android.content.Context
 import com.icorbalan.marvelcharacters.BuildConfig
-import com.icorbalan.marvelcharacters.core.RetrofitHelper
+import com.icorbalan.marvelcharacters.R
+import com.icorbalan.marvelcharacters.data.model.ApiResponse
 import com.icorbalan.marvelcharacters.data.model.CharactersResponse
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
@@ -10,17 +13,29 @@ import java.security.MessageDigest
 import javax.inject.Inject
 
 class MarvelService @Inject constructor(
-    private val apiClient: MarvelApiClient
+    private val apiClient: MarvelApiClient,
+    @ApplicationContext val context: Context
 ) {
-    suspend fun getCharacters(): CharactersResponse {
+    suspend fun getCharacters(): ApiResponse {
         val timestamp = System.currentTimeMillis()
         return withContext(Dispatchers.IO) {
-            val response = apiClient.getCharacters(
-                generateMd5Hash(timestamp),
-                timestamp
-            )
-            response.body()!!
+            getCharactersFromApi(timestamp)
         }
+    }
+
+    private suspend fun getCharactersFromApi(timestamp: Long) : ApiResponse = try {
+        val response = apiClient.getCharacters(
+            generateMd5Hash(timestamp),
+            timestamp
+        )
+        if (response.isSuccessful) {
+            ApiResponse(response.body(), null)
+        } else {
+            ApiResponse(null, response.message())
+        }
+
+    } catch(e: Exception) {
+        ApiResponse(null, context.getString(R.string.generic_error))
     }
 
     private fun generateMd5Hash(

@@ -6,4 +6,5 @@ import javax.inject.Singleton
 @Singleton
 class CharactersProvider @Inject constructor() {
     var characters: List<CharacterModel> = emptyList()
+    var errorMessage: String? = null
 }
