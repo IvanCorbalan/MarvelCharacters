@@ -25,9 +25,6 @@ class GetCharactersUseCaseTest {
 
     @Test
     fun `repository return list of characters`() = runBlocking {
-        //Given
-        coEvery { charactersRepository.getCharacters() } returns emptyList()
-
         // When
         getCharactersUseCase()
 

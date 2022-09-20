@@ -45,7 +45,6 @@ class CharactersViewModelTest {
     fun `when call to getCharactersUseCase return characters`( ) = runTest {
         //Given
         val charactersList = listOf<CharacterModel>(mockk(relaxed = true), mockk(relaxed = true))
-        coEvery { getCharactersUseCase() } returns charactersList
         coEvery { charactersProvider.characters } returns charactersList
 
         //When
@@ -60,13 +59,15 @@ class CharactersViewModelTest {
     fun `when call to getCharactersUseCase return empty list of characters`( ) = runTest {
         //Given
         val charactersList = listOf<CharacterModel>()
-        coEvery { getCharactersUseCase() } returns charactersList
+        val errorMessage = "error message"
         coEvery { charactersProvider.characters } returns charactersList
+        coEvery { charactersProvider.errorMessage } returns errorMessage
 
         //When
         charactersViewModel.onCreate()
 
         //Then
-        Assert.assertTrue(charactersViewModel.isLoading.value as Boolean)
+        Assert.assertFalse(charactersViewModel.isLoading.value as Boolean)
+        Assert.assertEquals(errorMessage, charactersViewModel.errorMessage.value)
     }
 }
