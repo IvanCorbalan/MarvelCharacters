@@ -4,7 +4,6 @@ import android.content.Context
 import com.icorbalan.marvelcharacters.BuildConfig
 import com.icorbalan.marvelcharacters.R
 import com.icorbalan.marvelcharacters.data.model.ApiResponse
-import com.icorbalan.marvelcharacters.data.model.CharactersResponse
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,15 +18,28 @@ class MarvelService @Inject constructor(
     suspend fun getCharacters(): ApiResponse {
         val timestamp = System.currentTimeMillis()
         return withContext(Dispatchers.IO) {
-            getCharactersFromApi(timestamp)
+            getCharactersFromApi(timestamp, null)
         }
     }
 
-    private suspend fun getCharactersFromApi(timestamp: Long) : ApiResponse = try {
-        val response = apiClient.getCharacters(
-            generateMd5Hash(timestamp),
-            timestamp
-        )
+    suspend fun getCharacter(characterId: Int?): ApiResponse {
+        val timestamp = System.currentTimeMillis()
+        return withContext(Dispatchers.IO) {
+            getCharactersFromApi(timestamp, characterId)
+        }
+    }
+
+    private suspend fun getCharactersFromApi(
+        timestamp: Long,
+        characterId: Int?
+    ) : ApiResponse = try {
+
+        val response = characterId?.let {
+            apiClient.getCharacter(it, generateMd5Hash(timestamp), timestamp)
+        } ?: run {
+            apiClient.getCharacters(generateMd5Hash(timestamp), timestamp)
+        }
+
         if (response.isSuccessful) {
             ApiResponse(response.body(), null)
         } else {

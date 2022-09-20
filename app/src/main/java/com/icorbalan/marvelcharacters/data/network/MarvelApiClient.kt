@@ -4,6 +4,7 @@ import com.icorbalan.marvelcharacters.BuildConfig
 import com.icorbalan.marvelcharacters.data.model.CharactersResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MarvelApiClient {
@@ -13,6 +14,14 @@ interface MarvelApiClient {
         @Query("hash") hash: String,
         @Query("ts") timestamp: Long,
         @Query("apikey") apikey: String = BuildConfig.PUBLIC_KEY,
+    ): Response<CharactersResponse>
+
+    @GET("/v1/public/characters/{characterId}")
+    suspend fun getCharacter(
+        @Path("characterId") characterId: Int,
+        @Query("hash") hash: String,
+        @Query("ts") timestamp: Long,
+        @Query("apikey") apikey: String = BuildConfig.PUBLIC_KEY
     ): Response<CharactersResponse>
 
 }

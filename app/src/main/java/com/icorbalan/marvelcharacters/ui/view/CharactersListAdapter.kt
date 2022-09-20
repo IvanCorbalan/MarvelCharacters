@@ -11,14 +11,17 @@ import com.icorbalan.marvelcharacters.R
 import com.icorbalan.marvelcharacters.data.model.CharacterModel
 import com.icorbalan.marvelcharacters.databinding.ItemCharacterListBinding
 
-class CharactersListAdapter: ListAdapter<CharacterModel, CharactersListAdapter.CharacterViewHolder>(DiffCallBack) {
+class CharactersListAdapter(
+    private val onClickListener:(CharacterModel) -> Unit
+): ListAdapter<CharacterModel, CharactersListAdapter.CharacterViewHolder>(DiffCallBack) {
 
     inner class CharacterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ItemCharacterListBinding.bind(view)
 
-        fun bin(character: CharacterModel) {
+        fun bin(character: CharacterModel, onClickListener: (CharacterModel) -> Unit) {
             binding.tvName.text = character.name
             Glide.with(binding.imCharacterImage.context).load(character.thumbnail.imageUrl()).into(binding.imCharacterImage)
+            binding.root.setOnClickListener{ onClickListener(character  ) }
         }
     }
 
@@ -39,6 +42,6 @@ class CharactersListAdapter: ListAdapter<CharacterModel, CharactersListAdapter.C
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
         val character = getItem(position)
-        holder.bin(character)
+        holder.bin(character, onClickListener)
     }
 }
